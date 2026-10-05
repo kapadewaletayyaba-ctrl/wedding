@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Wedding Planner & Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            DEFAULT: '#D4A574',
+                            light: '#F3E5D8',
+                            dark: '#B38453',
+                            50: '#FAF4EE',
+                            100: '#F5E8DC'
+                        },
+                        cream: {
+                            DEFAULT: '#FDF6F0',
+                            dark: '#F4ECE4',
+                            light: '#FFFDFB'
+                        },
+                        rose: {
+                            custom: '#E85D7A',
+                            light: '#F8D7DF',
+                            dark: '#C43A57'
+                        },
+                        charcoal: {
+                            DEFAULT: '#2C2A29',
+                            light: '#5A5654',
+                            muted: '#8C8783'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        accent: ['Great Vibes', 'cursive'],
+                        sans: ['Montserrat', 'sans-serif'],
+                        garamond: ['Cormorant Garamond', 'serif']
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 30px -10px rgba(212, 165, 116, 0.2)',
+                        'gold-glow': '0 0 20px rgba(212, 165, 116, 0.35)',
+                        'card': '0 4px 20px rgba(0, 0, 0, 0.04)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDF6F0;
+            color: #2C2A29;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 165, 116, 0.25);
+        }
+        .glass-dark {
+            background: rgba(44, 42, 41, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #B38453 0%, #D4A574 50%, #E6C59E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #D4A574 0%, #C3925F 100%);
+        }
+        .gold-gradient-bg:hover {
+            background: linear-gradient(135deg, #C3925F 0%, #B38453 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #FDF6F0;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D4A574;
+            border-radius: 4px;
+        }
+        .nav-link.active {
+            color: #D4A574;
+            border-bottom: 2px solid #D4A574;
+            font-weight: 600;
+        }
+        .page-view {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .page-view.hidden {
+            display: none !important;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gold/20 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-10 h-10 rounded-full border-2 border-gold flex items-center justify-center bg-gold-50 shadow-sm">
+                        <i class="fa-solid font-accent text-2xl text-gold">E</i>
+                    </div>
+                    <div>
+                        <span class="font-serif text-2xl tracking-wide font-bold text-charcoal block leading-none">WedPlanner</span>
+                        <span class="font-accent text-sm text-gold block tracking-widest leading-none mt-1">Wedding Couture & Planning</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center space-x-6 text-sm font-medium">
+                    <button onclick="navigateTo('home')" id="nav-home" class="nav-link py-2 text-charcoal hover:text-gold transition">Home</button>
+                    <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-link py-2 text-charcoal hover:text-gold transition">Dashboard</button>
+                    <button onclick="navigateTo('budget')" id="nav-budget" class="nav-link py-2 text-charcoal hover:text-gold transition">Budget</button>
+                    <button onclick="navigateTo('vendors')" id="nav-vendors" class="nav-link py-2 text-charcoal hover:text-gold transition">Vendors</button>
+                    <button onclick="navigateTo('guests')" id="nav-guests" class="nav-link py-2 text-charcoal hover:text-gold transition">Guests</button>
+                    <button onclick="navigateTo('checklist')" id="nav-checklist" class="nav-link py-2 text-charcoal hover:text-gold transition">Checklist</button>
+                    <button onclick="navigateTo('timeline')" id="nav-timeline" class="nav-link py-2 text-charcoal hover:text-gold transition">Timeline</button>
+                    <button onclick="navigateTo('messages')" id="nav-messages" class="nav-link py-2 text-charcoal hover:text-gold transition relative">
+                        Messages
+                        <span id="unread-msg-badge" class="absolute -top-1 -right-2 bg-rose-custom text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                    </button>
+                </nav>
+
+                <!-- Action Controls & Auth State -->
+                <div class="hidden sm:flex items-center space-x-4">
+                    <button onclick="openCodeModal()" class="px-3 py-1.5 text-xs border border-gold/40 text-gold-dark rounded-full hover:bg-gold-50 transition flex items-center gap-1.5" title="Inspect Code & Spec">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Inspect Spec</span>
+                    </button>
+
+                    <div id="user-auth-badge" class="flex items-center space-x-3 bg-cream p-1.5 pr-4 rounded-full border border-gold/30">
+                        <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Sophia & Alexander" class="w-8 h-8 rounded-full object-cover border border-gold">
+                        <div class="text-left leading-tight">
+                            <span id="user-display-name" class="font-semibold text-xs text-charcoal block">Sophia & Alex</span>
+                            <span class="text-[10px] text-gold-dark font-medium">Jun 18, 2027</span>
+                        </div>
+                        <button onclick="openAuthModal()" class="text-xs text-charcoal hover:text-rose-custom ml-1" title="Account Settings">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Navigation Menu Toggle -->
+                <div class="flex lg:hidden items-center space-x-2">
+                    <button onclick="openCodeModal()" class="p-2 text-gold-dark text-sm border border-gold/30 rounded-lg">
+                        <i class="fa-solid fa-code"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="p-2 text-charcoal hover:text-gold focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-gold/20 px-4 pt-2 pb-6 space-y-2 shadow-lg">
+            <button onclick="navigateTo('home'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Home</button>
+            <button onclick="navigateTo('dashboard'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Dashboard</button>
+            <button onclick="navigateTo('budget'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Budget Planner</button>
+            <button onclick="navigateTo('vendors'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Vendor Directory</button>
+            <button onclick="navigateTo('guests'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Guest List</button>
+            <button onclick="navigateTo('checklist'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Wedding Checklist</button>
+            <button onclick="navigateTo('timeline'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Timeline & Countdown</button>
+            <button onclick="navigateTo('messages'); toggleMobileMenu();" class="block w-full text-left py-2 px-3 text-sm font-medium hover:bg-cream rounded-lg">Messages Board</button>
+            <div class="pt-3 border-t border-gold/20 flex justify-between items-center">
+                <button onclick="openAuthModal(); toggleMobileMenu();" class="text-xs font-semibold text-gold-dark border border-gold px-4 py-2 rounded-full w-full">Sign In / Switch Account</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- MAIN CONTENT SPA VIEWS -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- VIEW 1: HOME PAGE -->
+        <section id="view-home" class="page-view space-y-16">
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl min-h-[520px] flex items-center justify-center text-center p-8 bg-cover bg-center" style="background-image: linear-gradient(rgba(44, 42, 41, 0.45), rgba(44, 42, 41, 0.65)), url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80');">
+                <div class="max-w-3xl space-y-6 text-white z-10 animate-fade-in">
+                    <span class="inline-block font-accent text-3xl sm:text-4xl text-gold-light tracking-wide">Crafting Your Dream Celebration</span>
+                    <h1 class="font-serif text-4xl sm:text-6xl font-bold leading-tight">Elegance, Magic & Perfect Memories</h1>
+                    <p class="font-sans text-sm sm:text-lg text-gray-100 max-w-2xl mx-auto font-light leading-relaxed">
+                        Organize every detail of your special day seamlessly with intuitive budget tracking, guest management, curating premier vendors, and dynamic day-of timelines.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 pt-4">
+                        <button onclick="navigateTo('dashboard')" class="gold-gradient-bg text-white font-semibold px-8 py-3.5 rounded-full shadow-lg hover:shadow-gold-glow transition-all transform hover:-translate-y-0.5">
+                            Start Planning Now <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </button>
+                        <button onclick="navigateTo('vendors')" class="bg-white/20 backdrop-blur-md text-white border border-white/40 font-semibold px-8 py-3.5 rounded-full hover:bg-white hover:text-charcoal transition-all">
+                            Explore Featured Vendors
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inspiration Gallery Grid -->
+            <div class="space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="font-accent text-2xl text-gold block">Visual Inspiration</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal">Wedding Gallery & Decor Ideas</h2>
+                    <p class="text-charcoal-muted text-sm max-w-xl mx-auto">Explore handpicked romantic aesthetics, floral centerpieces, bridal attire, and luxury venue layouts.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-2 group relative h-80 rounded-2xl overflow-hidden shadow-card cursor-pointer" onclick="navigateTo('vendors')">
+                        <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80" alt="Venue Inspiration" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                            <span class="text-xs uppercase tracking-widest text-gold font-semibold">Venues & Estates</span>
+                            <h3 class="font-serif text-2xl font-bold">Grand Ballroom Elegance</h3>
+                        </div>
+                    </div>
+                    <div class="group relative h-80 rounded-2xl overflow-hidden shadow-card cursor-pointer" onclick="navigateTo('vendors')">
+                        <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=800&q=80" alt="Floral Inspiration" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent flex flex-col justify-end p-4 text-white">
+                            <span class="text-xs uppercase tracking-widest text-gold font-semibold">Florals</span>
+                            <h3 class="font-serif text-xl font-bold">Pastel Rose & Eucalyptus</h3>
+                        </div>
+                    </div>
+                    <div class="group relative h-80 rounded-2xl overflow-hidden shadow-card cursor-pointer" onclick="navigateTo('vendors')">
+                        <img src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80" alt="Photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent flex flex-col justify-end p-4 text-white">
+                            <span class="text-xs uppercase tracking-widest text-gold font-semibold">Moments</span>
+                            <h3 class="font-serif text-xl font-bold">Sunset Couple Portraits</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Vendors Teaser -->
+            <div class="space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
+                    <div>
+                        <span class="font-accent text-2xl text-gold block">Handpicked Quality</span>
+                        <h2 class="font-serif text-3xl font-bold text-charcoal">Featured Wedding Vendors</h2>
+                    </div>
+                    <button onclick="navigateTo('vendors')" class="text-gold-dark hover:text-gold font-semibold text-sm flex items-center gap-2">
+                        View All Directory <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+                <div id="home-featured-vendors" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Testimonials -->
+            <div class="bg-cream border border-gold/30 rounded-3xl p-8 sm:p-12 text-center space-y-6 relative overflow-hidden">
+                <div class="absolute -top-10 -left-10 text-gold/10 text-9xl font-serif">“</div>
+                <span class="font-accent text-3xl text-gold block">Real Love Stories</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-charcoal">What Our Couples Say</h2>
+                <div class="max-w-2xl mx-auto space-y-4">
+                    <p class="font-serif italic text-lg sm:text-xl text-charcoal-light">
+                        "wedding planner made planning our 200-guest estate wedding completely stress-free. The real-time budget calculator, guest seating tracker, and direct messaging with our florist kept everything in perfect harmony!"
+                    </p>
+                    <div class="flex items-center justify-center space-x-3 pt-2">
+                        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=200&q=80" alt="Couple" class="w-12 h-12 rounded-full object-cover border-2 border-gold">
+                        <div class="text-left">
+                            <h4 class="font-semibold text-sm text-charcoal">Claire & Jonathan Vance</h4>
+                            <span class="text-xs text-gold-dark">Married in Tuscany, Italy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: DASHBOARD -->
+        <section id="view-dashboard" class="page-view hidden space-y-8">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/30 shadow-card flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center space-x-4">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Sophia & Alexander" class="w-20 h-20 rounded-full object-cover border-2 border-gold shadow-md">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h1 id="dashboard-couple-names" class="font-serif text-2xl sm:text-3xl font-bold text-charcoal">Sophia & Alexander</h1>
+                            <button onclick="editCoupleInfo()" class="text-xs text-gold-dark hover:text-gold p-1" title="Edit Details"><i class="fa-solid fa-pen"></i></button>
+                        </div>
+                        <p class="text-sm text-charcoal-muted mt-1"><i class="fa-solid fa-location-dot text-gold mr-1"></i> <span id="dashboard-location">The Grand Estate, Napa Valley</span></p>
+                        <p class="text-xs text-gold-dark font-medium mt-1"><i class="fa-regular fa-calendar mr-1"></i> June 18, 2027</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="bg-gold-50 border border-gold/30 px-5 py-3 rounded-2xl text-center">
+                        <span id="dash-countdown-days" class="font-serif text-2xl font-bold text-gold-dark block">380</span>
+                        <span class="text-[11px] uppercase tracking-wider text-charcoal font-semibold">Days to Go</span>
+                    </div>
+                    <button onclick="navigateTo('budget')" class="gold-gradient-bg text-white px-5 py-3 rounded-xl font-semibold text-sm shadow-sm hover:shadow-md transition">
+                        <i class="fa-solid fa-wallet mr-2"></i> Manage Budget
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-charcoal-muted uppercase tracking-wider block font-medium">Total Budget</span>
+                        <h3 id="stat-total-budget" class="font-serif text-2xl font-bold text-charcoal mt-1">$45,000</h3>
+                        <span class="text-xs text-emerald-600 font-medium mt-1 inline-block"><i class="fa-solid fa-check mr-1"></i> On track</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center text-gold text-xl">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-charcoal-muted uppercase tracking-wider block font-medium">Guest RSVPs</span>
+                        <h3 id="stat-rsvp-count" class="font-serif text-2xl font-bold text-charcoal mt-1">118 / 150</h3>
+                        <span class="text-xs text-gold-dark font-medium mt-1 inline-block">78.6% Confirmed</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center text-gold text-xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-charcoal-muted uppercase tracking-wider block font-medium">Vendors Booked</span>
+                        <h3 id="stat-vendors-count" class="font-serif text-2xl font-bold text-charcoal mt-1">4 / 6</h3>
+                        <span class="text-xs text-gold-dark font-medium mt-1 inline-block">2 pending contracts</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center text-gold text-xl">
+                        <i class="fa-solid fa-handshake"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-charcoal-muted uppercase tracking-wider block font-medium">Checklist Done</span>
+                        <h3 id="stat-checklist-progress" class="font-serif text-2xl font-bold text-charcoal mt-1">12 / 18</h3>
+                        <span class="text-xs text-gold-dark font-medium mt-1 inline-block">66% Completed</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gold-50 flex items-center justify-center text-gold text-xl">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Action Hub & Quick Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-gold/20 shadow-card space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-serif text-xl font-bold text-charcoal">Upcoming Milestone Deadlines</h3>
+                        <button onclick="navigateTo('checklist')" class="text-xs text-gold-dark font-semibold hover:underline">View All Checklist</button>
+                    </div>
+                    <div id="dash-milestones-list" class="space-y-3"></div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/20 shadow-card space-y-6">
+                    <h3 class="font-serif text-xl font-bold text-charcoal">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <button onclick="navigateTo('budget')" class="w-full text-left p-3.5 rounded-xl border border-gold/20 hover:bg-gold-50 transition flex items-center justify-between text-sm font-medium text-charcoal">
+                            <span><i class="fa-solid fa-plus-circle text-gold mr-2"></i> Add Expense Item</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-gold"></i>
+                        </button>
+                        <button onclick="navigateTo('guests')" class="w-full text-left p-3.5 rounded-xl border border-gold/20 hover:bg-gold-50 transition flex items-center justify-between text-sm font-medium text-charcoal">
+                            <span><i class="fa-solid fa-user-plus text-gold mr-2"></i> Invite New Guest</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-gold"></i>
+                        </button>
+                        <button onclick="navigateTo('vendors')" class="w-full text-left p-3.5 rounded-xl border border-gold/20 hover:bg-gold-50 transition flex items-center justify-between text-sm font-medium text-charcoal">
+                            <span><i class="fa-solid fa-magnifying-glass text-gold mr-2"></i> Browse Vendors</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-gold"></i>
+                        </button>
+                        <button onclick="navigateTo('messages')" class="w-full text-left p-3.5 rounded-xl border border-gold/20 hover:bg-gold-50 transition flex items-center justify-between text-sm font-medium text-charcoal">
+                            <span><i class="fa-solid fa-message text-gold mr-2"></i> Open Messages</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-gold"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: BUDGET PLANNER -->
+        <section id="view-budget" class="page-view hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-gold/30 shadow-card">
+                <div>
+                    <span class="font-accent text-2xl text-gold block">Financial Control</span>
+                    <h1 class="font-serif text-3xl font-bold text-charcoal">Wedding Budget Planner</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openAddBudgetModal()" class="gold-gradient-bg text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition">
+                        <i class="fa-solid fa-plus mr-1"></i> Add Expense
+                    </button>
+                </div>
+            </div>
+
+            <!-- Budget Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-charcoal-muted uppercase tracking-wider font-semibold">Total Allocated Budget</span>
+                    <div class="flex items-baseline justify-between mt-2">
+                        <h2 id="budget-total-display" class="font-serif text-3xl font-bold text-charcoal">$45,000</h2>
+                        <button onclick="editTotalBudget()" class="text-xs text-gold-dark hover:underline"><i class="fa-solid fa-pen mr-1"></i>Edit</button>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-charcoal-muted uppercase tracking-wider font-semibold">Total Spent / Committed</span>
+                    <h2 id="budget-spent-display" class="font-serif text-3xl font-bold text-charcoal mt-2">$32,450</h2>
+                    <span id="budget-percent-display" class="text-xs text-gold-dark font-semibold mt-1 inline-block">72.1% of budget used</span>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-charcoal-muted uppercase tracking-wider font-semibold">Remaining Funds</span>
+                    <h2 id="budget-remaining-display" class="font-serif text-3xl font-bold text-emerald-600 mt-2">$12,550</h2>
+                    <span class="text-xs text-charcoal-muted font-medium mt-1 inline-block">Available for extras</span>
+                </div>
+            </div>
+
+            <!-- Expense Breakdown Table & Categories -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/20 shadow-card space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h3 class="font-serif text-xl font-bold text-charcoal">Expense Categories & Items</h3>
+                    <div class="flex items-center space-x-2 text-sm">
+                        <span class="text-charcoal-muted">Filter by Category:</span>
+                        <select id="budget-filter-category" onchange="renderBudgetTable()" class="bg-cream border border-gold/30 rounded-lg px-3 py-1.5 text-xs focus:outline-none">
+                            <option value="ALL">All Categories</option>
+                            <option value="Venue">Venue</option>
+                            <option value="Catering">Catering</option>
+                            <option value="Photography">Photography</option>
+                            <option value="Attire & Beauty">Attire & Beauty</option>
+                            <option value="Decor & Florals">Decor & Florals</option>
+                            <option value="Entertainment">Entertainment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gold/20 text-xs text-charcoal-muted uppercase tracking-wider">
+                                <th class="py-3 px-4">Item Description</th>
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Estimated ($)</th>
+                                <th class="py-3 px-4">Actual ($)</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="budget-table-body" class="divide-y divide-gold/10 text-sm text-charcoal">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: VENDOR DIRECTORY -->
+        <section id="view-vendors" class="page-view hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-gold/30 shadow-card">
+                <div>
+                    <span class="font-accent text-2xl text-gold block">Curated Professionals</span>
+                    <h1 class="font-serif text-3xl font-bold text-charcoal">Wedding Vendor Directory</h1>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <input type="text" id="vendor-search-input" oninput="filterVendors()" placeholder="Search vendors..." class="bg-cream border border-gold/30 rounded-xl px-4 py-2 text-sm w-full sm:w-64 focus:outline-none focus:border-gold">
+                    <button onclick="openAddVendorModal()" class="gold-gradient-bg text-white px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm hover:shadow-md transition">
+                        <i class="fa-solid fa-plus mr-1"></i> Add Vendor
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vendor Category Pills -->
+            <div class="flex flex-wrap gap-2" id="vendor-category-pills">
+                <button onclick="filterVendorCategory('ALL')" class="vendor-pill active bg-gold text-white px-4 py-2 rounded-full text-xs font-semibold transition">All Vendors</button>
+                <button onclick="filterVendorCategory('Venue')" class="vendor-pill bg-white border border-gold/30 text-charcoal hover:bg-gold-50 px-4 py-2 rounded-full text-xs font-semibold transition">Venues</button>
+                <button onclick="filterVendorCategory('Photography')" class="vendor-pill bg-white border border-gold/30 text-charcoal hover:bg-gold-50 px-4 py-2 rounded-full text-xs font-semibold transition">Photography</button>
+                <button onclick="filterVendorCategory('Florals')" class="vendor-pill bg-white border border-gold/30 text-charcoal hover:bg-gold-50 px-4 py-2 rounded-full text-xs font-semibold transition">Florals & Decor</button>
+                <button onclick="filterVendorCategory('Catering')" class="vendor-pill bg-white border border-gold/30 text-charcoal hover:bg-gold-50 px-4 py-2 rounded-full text-xs font-semibold transition">Catering & Bar</button>
+                <button onclick="filterVendorCategory('Music')" class="vendor-pill bg-white border border-gold/30 text-charcoal hover:bg-gold-50 px-4 py-2 rounded-full text-xs font-semibold transition">Music & DJ</button>
+            </div>
+
+            <!-- Vendor Cards Grid -->
+            <div id="vendors-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- VIEW 5: GUEST LIST -->
+        <section id="view-guests" class="page-view hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-gold/30 shadow-card">
+                <div>
+                    <span class="font-accent text-2xl text-gold block">Attendees & Seating</span>
+                    <h1 class="font-serif text-3xl font-bold text-charcoal">Guest List & RSVPs</h1>
+                </div>
+                <button onclick="openAddGuestModal()" class="gold-gradient-bg text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition">
+                    <i class="fa-solid fa-user-plus mr-1"></i> Add Guest
+                </button>
+            </div>
+
+            <!-- Guest Stats Summary -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-charcoal-muted uppercase font-semibold">Total Invited</span>
+                    <h3 id="guest-stat-total" class="font-serif text-2xl font-bold text-charcoal mt-1">150</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-emerald-600 uppercase font-semibold">Confirmed (RSVP Yes)</span>
+                    <h3 id="guest-stat-yes" class="font-serif text-2xl font-bold text-emerald-600 mt-1">118</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-rose-custom uppercase font-semibold">Declined (RSVP No)</span>
+                    <h3 id="guest-stat-no" class="font-serif text-2xl font-bold text-rose-custom mt-1">14</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gold/20 shadow-card">
+                    <span class="text-xs text-gold-dark uppercase font-semibold">Pending Response</span>
+                    <h3 id="guest-stat-pending" class="font-serif text-2xl font-bold text-gold-dark mt-1">18</h3>
+                </div>
+            </div>
+
+            <!-- Guest Table -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/20 shadow-card space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-serif text-xl font-bold text-charcoal">Guest Directory</h3>
+                    <div class="flex items-center space-x-2">
+                        <select id="guest-filter-rsvp" onchange="renderGuestTable()" class="bg-cream border border-gold/30 rounded-lg px-3 py-1.5 text-xs focus:outline-none">
+                            <option value="ALL">All RSVPs</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Declined">Declined</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gold/20 text-xs text-charcoal-muted uppercase tracking-wider">
+                                <th class="py-3 px-4">Guest Name</th>
+                                <th class="py-3 px-4">Email</th>
+                                <th class="py-3 px-4">RSVP Status</th>
+                                <th class="py-3 px-4">Meal Preference</th>
+                                <th class="py-3 px-4">Table / Seating</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guest-table-body" class="divide-y divide-gold/10 text-sm text-charcoal">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 6: CHECKLIST -->
+        <section id="view-checklist" class="page-view hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-gold/30 shadow-card">
+                <div>
+                    <span class="font-accent text-2xl text-gold block">Step-by-Step Guidance</span>
+                    <h1 class="font-serif text-3xl font-bold text-charcoal">Wedding Planning Checklist</h1>
+                </div>
+                <button onclick="openAddChecklistModal()" class="gold-gradient-bg text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition">
+                    <i class="fa-solid fa-plus mr-1"></i> Add Task
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/20 shadow-card space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-serif text-xl font-bold text-charcoal">Tasks & Milestones</h3>
+                    <span id="checklist-progress-text" class="text-xs font-semibold text-gold-dark">12 of 18 completed</span>
+                </div>
+                <div id="checklist-container" class="space-y-3">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 7: TIMELINE -->
+        <section id="view-timeline" class="page-view hidden space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-gold/30 shadow-card">
+                <div>
+                    <span class="font-accent text-2xl text-gold block">Day-Of Execution</span>
+                    <h1 class="font-serif text-3xl font-bold text-charcoal">Wedding Day Timeline</h1>
+                </div>
+                <button onclick="openAddTimelineModal()" class="gold-gradient-bg text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition">
+                    <i class="fa-solid fa-plus mr-1"></i> Add Schedule Event
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/20 shadow-card space-y-6">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Schedule of Events (June 18, 2027)</h3>
+                <div id="timeline-container" class="relative border-l-2 border-gold/40 ml-4 pl-6 space-y-8 py-4">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 8: MESSAGES -->
+        <section id="view-messages" class="page-view hidden space-y-8">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gold/30 shadow-card flex justify-between items-center">
+                <div>
+                    <span class="font-accent text-2xl text-gold block">Direct Collaboration</span>
+                    <h1 class="font-serif text-3xl font-bold text-charcoal">Vendor & Planner Messages</h1>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-3xl border border-gold/20 shadow-card overflow-hidden min-h-[500px]">
+                <!-- Contacts List -->
+                <div class="border-r border-gold/20 p-4 space-y-2 bg-cream/30">
+                    <h3 class="font-serif font-bold text-charcoal px-2 pb-2 border-b border-gold/20">Conversations</h3>
+                    <div id="messages-contacts-list" class="space-y-1">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Chat Box -->
+                <div class="lg:col-span-2 flex flex-col justify-between p-6">
+                    <div id="chat-header" class="border-b border-gold/20 pb-4 mb-4 flex items-center space-x-3">
+                        <img id="active-chat-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-gold">
+                        <div>
+                            <h4 id="active-chat-name" class="font-semibold text-charcoal text-sm">Elena Rostova (Floral Designer)</h4>
+                            <span class="text-[10px] text-emerald-600 font-medium">Online</span>
+                        </div>
+                    </div>
+
+                    <div id="chat-messages-container" class="space-y-4 overflow-y-auto max-h-[360px] pr-2 custom-scrollbar flex-grow">
+                        <!-- Populated via JS -->
+                    </div>
+
+                    <div class="pt-4 border-t border-gold/20 flex items-center space-x-2">
+                        <input type="text" id="chat-input" onkeypress="handleChatKeypress(event)" placeholder="Type a message to your vendor..." class="bg-cream border border-gold/30 rounded-xl px-4 py-3 text-sm flex-grow focus:outline-none focus:border-gold">
+                        <button onclick="sendChatMessage()" class="gold-gradient-bg text-white px-6 py-3 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALS -->
+    <!-- 1. Code Spec / Inspect Modal -->
+    <div id="code-modal" class="fixed inset-0 z-50 bg-charcoal/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-gold/40">
+            <div class="flex justify-between items-center border-b border-gold/20 pb-4">
+                <div>
+                    <span class="font-accent text-xl text-gold block">Application Architecture</span>
+                    <h3 class="font-serif text-2xl font-bold text-charcoal">wedding planner Specification & Code</h3>
+                </div>
+                <button onclick="closeCodeModal()" class="text-charcoal-muted hover:text-charcoal text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 text-sm text-charcoal-light">
+                <p><strong>wedding planner</strong> is built as a rich Single Page Application (SPA) powered by Tailwind CSS, Font Awesome, and fully persistent vanilla JavaScript local state management.</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><strong>Dynamic Budget Calculation:</strong> Real-time updating of remaining funds, percent used, and category filtering.</li>
+                    <li><strong>Vendor Management:</strong> Filter by categories, toggle booking status, and direct instant messaging.</li>
+                    <li><strong>Guest RSVP Tracker:</strong> Live confirmation count and meal preference logging.</li>
+                    <li><strong>Interactive Checklist & Timeline:</strong> Complete tasks and schedule day-of events seamlessly.</li>
+                </ul>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeCodeModal()" class="gold-gradient-bg text-white px-6 py-2.5 rounded-xl text-sm font-semibold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Auth / Account Switch Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-charcoal/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-gold/40">
+            <div class="flex justify-between items-center border-b border-gold/20 pb-4">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Switch Couple Account</h3>
+                <button onclick="closeAuthModal()" class="text-charcoal-muted hover:text-charcoal text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Couple Names</label>
+                    <input type="text" id="input-auth-names" value="Sophia & Alexander" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Wedding Date</label>
+                    <input type="date" id="input-auth-date" value="2027-06-18" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Wedding Location</label>
+                    <input type="text" id="input-auth-location" value="The Grand Estate, Napa Valley" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeAuthModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gold/30 text-charcoal">Cancel</button>
+                <button onclick="saveAuthAccount()" class="gold-gradient-bg text-white px-6 py-2.5 rounded-xl text-sm font-semibold">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Add Expense Modal -->
+    <div id="budget-modal" class="fixed inset-0 z-50 bg-charcoal/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-gold/40">
+            <div class="flex justify-between items-center border-b border-gold/20 pb-4">
+                <h3 class="font-serif text-xl font-bold text-charcoal">Add New Expense Item</h3>
+                <button onclick="closeAddBudgetModal()" class="text-charcoal-muted hover:text-charcoal text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Description</label>
+                    <input type="text" id="new-budget-desc" placeholder="e.g. Wedding Cake" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Category</label>
+                    <select id="new-budget-cat" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                        <option value="Venue">Venue</option>
+                        <option value="Catering">Catering</option>
+                        <option value="Photography">Photography</option>
+                        <option value="Attire & Beauty">Attire & Beauty</option>
+                        <option value="Decor & Florals">Decor & Florals</option>
+                        <option value="Entertainment">Entertainment</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Estimated Cost ($)</label>
+                    <input type="number" id="new-budget-est" placeholder="1500" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-charcoal-muted mb-1">Actual Cost ($)</label>
+                    <input type="number" id="new-budget-act" placeholder="1400" class="w-full bg-cream border border-gold/30 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-gold">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeAddBudgetModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold border border-gold/30 text-charcoal">Cancel</button>
+                <button onclick="submitNewBudget()" class="gold-gradient-bg text-white px-6 py-2.5 rounded-xl text-sm font-semibold">Add Expense</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-white py-12 border-t border-gold/30 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full border-2 border-gold flex items-center justify-center bg-gold/10">
+                    <i class="fa-solid font-accent text-2xl text-gold">E</i>
+                </div>
+                <div>
+                    <span class="font-serif text-xl tracking-wide font-bold block leading-none text-white">WedPlanner</span>
+                    <span class="font-accent text-xs text-gold block tracking-widest mt-1">Luxury Wedding Planner</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400">©  Wedding Couture & Planning. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // State Management
+        let appState = {
+            couple: {
+                names: "Sophia & Alexander",
+                date: "2027-06-18",
+                location: "The Grand Estate, Napa Valley",
+                totalBudget: 45000
+            },
+            budget: [
+                { id: 1, desc: "Estate Venue Rental", cat: "Venue", est: 15000, act: 15000, status: "Booked" },
+                { id: 2, desc: "Gourmet Catering & Bar", cat: "Catering", est: 12000, act: 11500, status: "Booked" },
+                { id: 3, desc: "Photography & Drone", cat: "Photography", est: 4500, act: 4200, status: "Booked" },
+                { id: 4, desc: "Bridal Gown & Tuxedo", cat: "Attire & Beauty", est: 5000, act: 4850, status: "Booked" },
+                { id: 5, desc: "Floral Centerpieces & Arch", cat: "Decor & Florals", est: 4000, act: 3800, status: "Pending" },
+                { id: 6, desc: "Live Jazz Band & DJ", cat: "Entertainment", est: 4500, act: 4000, status: "Pending" }
+            ],
+            vendors: [
+                { id: 1, name: "The Grand Estate", cat: "Venue", rating: 4.9, price: "$$$$", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=600&q=80", phone: "+1 (555) 234-5678", booked: true },
+                { id: 2, name: "Elena Rostova Florals", cat: "Florals", rating: 4.8, price: "$$$", img: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80", phone: "+1 (555) 345-6789", booked: false },
+                { id: 3, name: "Lumière Cinematic Photo", cat: "Photography", rating: 5.0, price: "$$$$", img: "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=600&q=80", phone: "+1 (555) 456-7890", booked: true },
+                { id: 4, name: "Savory Artisan Catering", cat: "Catering", rating: 4.9, price: "$$$", img: "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=600&q=80", phone: "+1 (555) 567-8901", booked: true }
+            ],
+            guests: [
+                { id: 1, name: "Victoria Sterling", email: "victoria@example.com", rsvp: "Confirmed", meal: "Filet Mignon", table: "Table 1" },
+                { id: 2, name: "Marcus Vance", email: "marcus@example.com", rsvp: "Confirmed", meal: "Vegetarian", table: "Table 1" },
+                { id: 3, name: "Dr. Evelyn Wright", email: "evelyn@example.com", rsvp: "Pending", meal: "Salmon", table: "Unassigned" },
+                { id: 4, name: "Liam Kensington", email: "liam@example.com", rsvp: "Declined", meal: "None", table: "Unassigned" }
+            ],
+            checklist: [
+                { id: 1, task: "Secure wedding venue and date contract", done: true, due: "12 months before" },
+                { id: 2, task: "Hire professional photographer and videographer", done: true, due: "10 months before" },
+                { id: 3, task: "Select bridal gown and bridesmaid dresses", done: true, due: "9 months before" },
+                { id: 4, task: "Finalize guest list count and addresses", done: false, due: "6 months before" },
+                { id: 5, task: "Send out formal wedding invitations", done: false, due: "4 months before" }
+            ],
+            timeline: [
+                { time: "1:00 PM", title: "Bridal Hair & Makeup Preparation", desc: "Bride and bridesmaids getting ready in the bridal suite." },
+                { time: "3:30 PM", title: "First Look & Couple Portraits", desc: "Intimate photo session in the estate garden." },
+                { time: "5:00 PM", title: "Wedding Ceremony Begins", desc: "Processional music and vows exchange." },
+                { time: "6:30 PM", title: "Cocktail Hour & Hors d'oeuvres", desc: "Live acoustic jazz trio playing on the terrace." },
+                { time: "8:00 PM", title: "Grand Reception Dinner & Toasts", desc: "First dance and gourmet dinner service." }
+            ],
+            messages: [
+                { id: 1, sender: "Elena Rostova", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80", unread: 2, chats: [
+                    { from: "Elena", text: "Hello Sophia! I sent over the updated floral arch mockup for approval.", time: "10:30 AM" },
+                    { from: "Sophia", text: "Thank you Elena! The pastel roses look divine. Let's proceed with that.", time: "10:45 AM" }
+                ]},
+                { id: 2, sender: "Lumière Photo", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80", unread: 0, chats: [
+                    { from: "Photographer", text: "We have locked in the sunset spot for your portrait session.", time: "Yesterday" }
+                ]}
+            ]
+        };
+
+        // Navigation Controller
+        function navigateTo(viewId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) targetView.classList.remove('hidden');
+
+            const targetNav = document.getElementById(`nav-${viewId}`);
+            if (targetNav) targetNav.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderActiveViewData(viewId);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-charcoal text-white text-xs px-4 py-3 rounded-xl shadow-lg border border-gold/40 flex items-center space-x-2 animate-bounce';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Render functions per view
+        function renderActiveViewData(viewId) {
+            if (viewId === 'home') renderHomeVendors();
+            if (viewId === 'dashboard') renderDashboard();
+            if (viewId === 'budget') renderBudgetTable();
+            if (viewId === 'vendors') renderVendorsGrid();
+            if (viewId === 'guests') renderGuestTable();
+            if (viewId === 'checklist') renderChecklist();
+            if (viewId === 'timeline') renderTimeline();
+            if (viewId === 'messages') renderMessages();
+        }
+
+        function renderHomeVendors() {
+            const container = document.getElementById('home-featured-vendors');
+            container.innerHTML = appState.vendors.slice(0, 3).map(v => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-gold/20 shadow-card group cursor-pointer" onclick="navigateTo('vendors')">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${v.img}" alt="${v.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <span class="absolute top-3 right-3 bg-white/95 text-xs px-2.5 py-1 rounded-full font-semibold text-charcoal shadow-sm">${v.price}</span>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        <span class="text-xs uppercase tracking-widest text-gold font-semibold">${v.cat}</span>
+                        <h4 class="font-serif text-xl font-bold text-charcoal">${v.name}</h4>
+                        <div class="flex items-center text-xs text-charcoal-muted">
+                            <i class="fa-solid fa-star text-gold mr-1"></i>
+                            <span class="font-semibold text-charcoal">${v.rating}</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="fa-solid fa-phone text-gold mr-1"></i> ${v.phone}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDashboard() {
+            document.getElementById('dashboard-couple-names').textContent = appState.couple.names;
+            document.getElementById('dashboard-location').textContent = appState.couple.location;
+            document.getElementById('user-display-name').textContent = appState.couple.names.split('&')[0].trim() + " & Alex";
+
+            // Milestones
+            const milestones = document.getElementById('dash-milestones-list');
+            milestones.innerHTML = appState.checklist.slice(0, 4).map(item => `
+                <div class="flex items-center justify-between p-3.5 rounded-xl border border-gold/20 bg-cream/40">
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistTask(${item.id})" class="w-4 h-4 accent-gold rounded">
+                        <span class="text-sm font-medium ${item.done ? 'line-through text-charcoal-muted' : 'text-charcoal'}">${item.task}</span>
+                    </div>
+                    <span class="text-xs text-gold-dark font-semibold whitespace-nowrap">${item.due}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderBudgetTable() {
+            const filterCat = document.getElementById('budget-filter-category').value;
+            const tbody = document.getElementById('budget-table-body');
+            
+            const filtered = filterCat === 'ALL' ? appState.budget : appState.budget.filter(b => b.cat === filterCat);
+            
+            tbody.innerHTML = filtered.map(b => `
+                <tr class="hover:bg-cream/50 transition">
+                    <td class="py-3 px-4 font-medium">${b.desc}</td>
+                    <td class="py-3 px-4"><span class="bg-gold-50 text-gold-dark text-xs px-2.5 py-1 rounded-full font-semibold">${b.cat}</span></td>
+                    <td class="py-3 px-4">$${b.est.toLocaleString()}</td>
+                    <td class="py-3 px-4 font-semibold">$${b.act.toLocaleString()}</td>
+                    <td class="py-3 px-4">
+                        <span class="text-xs px-2.5 py-1 rounded-full font-semibold ${b.status === 'Booked' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${b.status}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteBudget(${b.id})" class="text-charcoal-muted hover:text-rose-custom"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Calculate totals
+            const totalEst = appState.budget.reduce((acc, curr) => acc + curr.est, 0);
+            const totalAct = appState.budget.reduce((acc, curr) => acc + curr.act, 0);
+            const remaining = appState.couple.totalBudget - totalAct;
+
+            document.getElementById('budget-total-display').textContent = `$${appState.couple.totalBudget.toLocaleString()}`;
+            document.getElementById('budget-spent-display').textContent = `$${totalAct.toLocaleString()}`;
+            document.getElementById('budget-remaining-display').textContent = `$${remaining.toLocaleString()}`;
+            const pct = ((totalAct / appState.couple.totalBudget) * 100).toFixed(1);
+            document.getElementById('budget-percent-display').textContent = `${pct}% of budget used`;
+        }
+
+        function renderVendorsGrid() {
+            const grid = document.getElementById('vendors-grid');
+            grid.innerHTML = appState.vendors.map(v => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-gold/20 shadow-card">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${v.img}" alt="${v.name}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 right-3 bg-white/95 text-xs px-2.5 py-1 rounded-full font-semibold text-charcoal shadow-sm">${v.price}</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs uppercase tracking-widest text-gold font-semibold">${v.cat}</span>
+                                <h4 class="font-serif text-xl font-bold text-charcoal mt-0.5">${v.name}</h4>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${v.booked ? 'bg-emerald-100 text-emerald-800' : 'bg-gold-50 text-gold-dark'}">${v.booked ? 'Booked' : 'Available'}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-charcoal-muted pt-2 border-t border-gold/10">
+                            <span><i class="fa-solid fa-star text-gold mr-1"></i> ${v.rating}</span>
+                            <span><i class="fa-solid fa-phone text-gold mr-1"></i> ${v.phone}</span>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="toggleVendorBook(${v.id})" class="flex-grow py-2 rounded-xl border border-gold/30 text-xs font-semibold text-gold-dark hover:bg-gold-50 transition">${v.booked ? 'Mark Available' : 'Mark Booked'}</button>
+                            <button onclick="navigateTo('messages')" class="gold-gradient-bg text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-message"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderGuestTable() {
+            const tbody = document.getElementById('guest-table-body');
+            tbody.innerHTML = appState.guests.map(g => `
+                <tr class="hover:bg-cream/50 transition">
+                    <td class="py-3 px-4 font-medium">${g.name}</td>
+                    <td class="py-3 px-4 text-charcoal-muted">${g.email}</td>
+                    <td class="py-3 px-4">
+                        <span class="text-xs px-2.5 py-1 rounded-full font-semibold ${g.rsvp === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : g.rsvp === 'Declined' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'}">${g.rsvp}</span>
+                    </td>
+                    <td class="py-3 px-4">${g.meal}</td>
+                    <td class="py-3 px-4">${g.table}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteGuest(${g.id})" class="text-charcoal-muted hover:text-rose-custom"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            const doneCount = appState.checklist.filter(c => c.done).length;
+            document.getElementById('checklist-progress-text').textContent = `${doneCount} of ${appState.checklist.length} completed`;
+
+            container.innerHTML = appState.checklist.map(item => `
+                <div class="flex items-center justify-between p-4 rounded-xl border border-gold/20 bg-white shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistTask(${item.id})" class="w-5 h-5 accent-gold rounded">
+                        <span class="text-sm font-medium ${item.done ? 'line-through text-charcoal-muted' : 'text-charcoal'}">${item.task}</span>
+                    </div>
+                    <span class="text-xs font-semibold text-gold-dark bg-gold-50 px-3 py-1 rounded-full">${item.due}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = appState.timeline.map(t => `
+                <div class="relative">
+                    <div class="absolute -left-[35px] top-0 w-6 h-6 rounded-full bg-gold-50 border-2 border-gold flex items-center justify-center text-[10px] text-gold-dark font-bold">✓</div>
+                    <span class="text-xs font-bold text-gold-dark tracking-wider uppercase">${t.time}</span>
+                    <h4 class="font-serif text-lg font-bold text-charcoal mt-0.5">${t.title}</h4>
+                    <p class="text-sm text-charcoal-muted mt-1">${t.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderMessages() {
+            const contactsList = document.getElementById('messages-contacts-list');
+            contactsList.innerHTML = appState.messages.map((m, idx) => `
+                <div onclick="selectChat(${idx})" class="flex items-center space-x-3 p-3 rounded-xl cursor-pointer hover:bg-gold-50 transition ${idx === 0 ? 'bg-gold-50 border border-gold/30' : ''}">
+                    <img src="${m.avatar}" class="w-10 h-10 rounded-full object-cover border border-gold">
+                    <div class="flex-grow">
+                        <h4 class="font-semibold text-xs text-charcoal">${m.sender}</h4>
+                        <p class="text-[11px] text-charcoal-muted truncate">${m.chats[m.chats.length - 1].text}</p>
+                    </div>
+                    ${m.unread > 0 ? `<span class="bg-rose-custom text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">${m.unread}</span>` : ''}
+                </div>
+            `).join('');
+
+            const chatContainer = document.getElementById('chat-messages-container');
+            const activeChat = appState.messages[0];
+            chatContainer.innerHTML = activeChat.chats.map(c => `
+                <div class="flex flex-col ${c.from === 'Sophia' ? 'items-end' : 'items-start'}">
+                    <div class="max-w-md rounded-2xl px-4 py-3 text-sm ${c.from === 'Sophia' ? 'gold-gradient-bg text-white' : 'bg-cream border border-gold/20 text-charcoal'}">
+                        ${c.text}
+                    </div>
+                    <span class="text-[10px] text-charcoal-muted mt-1">${c.time}</span>
+                </div>
+            `).join('');
+        }
+
+        // Modal triggers
+        function openCodeModal() { document.getElementById('code-modal').classList.remove('hidden'); }
+        function closeCodeModal() { document.getElementById('code-modal').classList.add('hidden'); }
+        function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+        function openAddBudgetModal() { document.getElementById('budget-modal').classList.remove('hidden'); }
+        function closeAddBudgetModal() { document.getElementById('budget-modal').classList.add('hidden'); }
+
+        function saveAuthAccount() {
+            appState.couple.names = document.getElementById('input-auth-names').value;
+            appState.couple.date = document.getElementById('input-auth-date').value;
+            appState.couple.location = document.getElementById('input-auth-location').value;
+            closeAuthModal();
+            renderDashboard();
+            showToast("Couple profile updated successfully!");
+        }
+
+        function submitNewBudget() {
+            const desc = document.getElementById('new-budget-desc').value;
+            const cat = document.getElementById('new-budget-cat').value;
+            const est = parseFloat(document.getElementById('new-budget-est').value) || 0;
+            const act = parseFloat(document.getElementById('new-budget-act').value) || 0;
+            if (!desc) return;
+
+            appState.budget.push({ id: Date.now(), desc, cat, est, act, status: 'Pending' });
+            closeAddBudgetModal();
+            renderBudgetTable();
+            showToast("New expense item added!");
+        }
+
+        function deleteBudget(id) {
+            appState.budget = appState.budget.filter(b => b.id !== id);
+            renderBudgetTable();
+            showToast("Expense removed.");
+        }
+
+        function toggleChecklistTask(id) {
+            const task = appState.checklist.find(c => c.id === id);
+            if (task) {
+                task.done = !task.done;
+                renderDashboard();
+                if (document.getElementById('view-checklist').classList.contains('hidden') === false) {
+                    renderChecklist();
+                }
+                showToast("Checklist updated!");
+            }
+        }
+
+        function toggleVendorBook(id) {
+            const v = appState.vendors.find(item => item.id === id);
+            if (v) {
+                v.booked = !v.booked;
+                renderVendorsGrid();
+                showToast(`Vendor status updated for ${v.name}!`);
+            }
+        }
+
+        function deleteGuest(id) {
+            appState.guests = appState.guests.filter(g => g.id !== id);
+            renderGuestTable();
+            showToast("Guest removed.");
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appState.messages[0].chats.push({ from: 'Sophia', text, time: 'Just now' });
+            input.value = '';
+            renderMessages();
+        }
+
+        // Initial load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderHomeVendors();
+            renderDashboard();
+            renderBudgetTable();
+            renderVendorsGrid();
+            renderGuestTable();
+            renderChecklist();
+            renderTimeline();
+            renderMessages();
+        });
+    </script>
+</body>
+</html>
